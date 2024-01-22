@@ -16,7 +16,7 @@ class OrderCounterController extends GetxController {
       DocumentSnapshot<Object?> userDoc = await ordersCollection.doc(uid).get();
 
       if (!userDoc.exists) {
-        print('User not found with UID: $uid');
+    
         return [];
       }
 
@@ -28,7 +28,7 @@ class OrderCounterController extends GetxController {
 
       return orders;
     } catch (e) {
-      print('Error getting user orders: $e');
+    
       // Handle the error
       return [];
     }

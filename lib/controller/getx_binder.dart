@@ -5,7 +5,7 @@ import 'package:laundry_mama_rework/controller/contact_details.dart';
 import 'package:laundry_mama_rework/controller/datetime_controller.dart';
 import 'package:laundry_mama_rework/controller/order_cart_controller.dart';
 import 'package:laundry_mama_rework/controller/dashboard_controller.dart';
-import 'package:laundry_mama_rework/controller/payment_controllerAPP.dart';
+import 'package:laundry_mama_rework/controller/payment_controllerapp.dart';
 import 'package:laundry_mama_rework/controller/reset_controller.dart';
 import 'package:laundry_mama_rework/controller/signin_and_up_controller.dart';
 import 'package:laundry_mama_rework/controller/themecontroller.dart';

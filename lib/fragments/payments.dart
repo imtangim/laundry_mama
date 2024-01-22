@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:laundry_mama_rework/controller/order_cart_controller.dart';
-import 'package:laundry_mama_rework/controller/payment_controllerAPP.dart';
+import 'package:laundry_mama_rework/controller/payment_controllerapp.dart';
 import 'package:laundry_mama_rework/utils/color.dart';
 import 'package:laundry_mama_rework/utils/payment_controller.dart';
 

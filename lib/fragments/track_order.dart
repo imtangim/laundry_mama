@@ -139,7 +139,7 @@ class _TrackOrderFragmentState extends State<TrackOrderFragment> {
                               adjustedStringpPaymentID,
                               order.paymentMethod,
                               adjustedDateTime,
-                              order.totalBill!,
+                              order.totalBill,
                               order.orderStatus,
                             );
                           },

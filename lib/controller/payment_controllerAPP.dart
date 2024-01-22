@@ -20,9 +20,9 @@ class PaymentControllerAPP extends GetxController {
         'orders': FieldValue.arrayUnion([orderData]),
       });
 
-      print('Order added successfully!');
+     
     } catch (error) {
-      print('Error adding order: $error');
+    
       // Handle the error as needed
     }
   }

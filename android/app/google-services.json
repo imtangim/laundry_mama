@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "935513206295",
+    "project_id": "laundrymama-4111",
+    "storage_bucket": "laundrymama-4111.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935513206295:android:f5c05847611b7b8d24b652",
+        "android_client_info": {
+          "package_name": "com.example.laundry_mama_rework"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwj_3hBlJN7ma0iylQgy0s6-mpy75GQLA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

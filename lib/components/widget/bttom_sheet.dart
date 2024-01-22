@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:laundry_mama_rework/controller/order_cart_controller.dart';
 import 'package:laundry_mama_rework/utils/style.dart';
 
 class BottomSheetCart extends StatelessWidget {
@@ -36,10 +37,15 @@ class BottomSheetCart extends StatelessWidget {
                         "Total item",
                         style: CustomStyle.contentStyle.copyWith(fontSize: 18),
                       ),
-                      Text(
-                        "50 Items",
-                        style: CustomStyle.contentStyle.copyWith(fontSize: 18),
-                      ),
+                      GetBuilder<OrderCounterController>(builder: (controller) {
+                        return Text(
+                          controller
+                              .calculateSum(controller.itemCounters)
+                              .toString(),
+                          style:
+                              CustomStyle.contentStyle.copyWith(fontSize: 18),
+                        );
+                      }),
                     ],
                   ),
                   Row(
@@ -49,10 +55,12 @@ class BottomSheetCart extends StatelessWidget {
                         "Total amount",
                         style: CustomStyle.contentStyle,
                       ),
-                      Text(
-                        "(50 X 100) Taka",
-                        style: CustomStyle.contentStyle,
-                      ),
+                      GetBuilder<OrderCounterController>(builder: (controller) {
+                        return Text(
+                          "${controller.calculateAmount().toString()} Taka",
+                          style: CustomStyle.contentStyle,
+                        );
+                      }),
                     ],
                   ),
                   Row(
@@ -73,31 +81,33 @@ class BottomSheetCart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(""),
-                      Text(
-                        "5000 Taka",
-                        style: CustomStyle.contentStyle.copyWith(
-                          fontSize: 18,
-                        ),
-                      ),
+                      GetBuilder<OrderCounterController>(builder: (controller) {
+                        return Text(
+                          "${controller.amountAfterDeliveryChargeAdded().toString()} Taka",
+                          style: CustomStyle.contentStyle.copyWith(
+                            fontSize: 18,
+                          ),
+                        );
+                      }),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Offer",
-                        style: CustomStyle.contentStyle.copyWith(fontSize: 15),
-                      ),
-                      Text(
-                        "( - )",
-                        style: CustomStyle.contentStyle.copyWith(fontSize: 18),
-                      ),
-                      Text(
-                        "50 Taka",
-                        style: CustomStyle.contentStyle.copyWith(fontSize: 15),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "Offer",
+                  //       style: CustomStyle.contentStyle.copyWith(fontSize: 15),
+                  //     ),
+                  //     Text(
+                  //       "( - )",
+                  //       style: CustomStyle.contentStyle.copyWith(fontSize: 18),
+                  //     ),
+                  //     Text(
+                  //       "50 Taka",
+                  //       style: CustomStyle.contentStyle.copyWith(fontSize: 15),
+                  //     ),
+                  //   ],
+                  // ),
                   const Divider(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,10 +116,12 @@ class BottomSheetCart extends StatelessWidget {
                         "Total",
                         style: CustomStyle.contentStyle.copyWith(fontSize: 18),
                       ),
-                      Text(
-                        "4950 Taka",
-                        style: CustomStyle.contentStyle.copyWith(fontSize: 18),
-                      ),
+                      GetBuilder<OrderCounterController>(builder: (controller) {
+                        return Text(
+                            "${controller.amountAfterDeliveryChargeAdded().toString()} Taka",
+                            style: CustomStyle.contentStyle
+                                .copyWith(fontSize: 18));
+                      }),
                     ],
                   ),
                 ],

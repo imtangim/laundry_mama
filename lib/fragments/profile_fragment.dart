@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:laundry_mama_rework/controller/signin_and_up_controller.dart';
 import 'package:laundry_mama_rework/controller/themecontroller.dart';
+import 'package:laundry_mama_rework/models/user_model.dart';
 import 'package:laundry_mama_rework/utils/color.dart';
 
 class ProfileFragment extends StatefulWidget {
@@ -16,6 +17,7 @@ class ProfileFragment extends StatefulWidget {
 
 class _ProfileFragmentState extends State<ProfileFragment> {
   final ThemeController _themeController = Get.find<ThemeController>();
+
   final SignInAndUpController _signInController = Get.find();
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
@@ -174,72 +176,113 @@ class _ProfileFragmentState extends State<ProfileFragment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
-          HeaderHolder(
-            imageURL: widget.imageURL,
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Column(
-            children: [
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: CustomAsset.primaryColor,
-                  radius: 20,
-                  child: const Icon(
-                    Icons.account_circle_outlined,
-                    size: 35,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text(
-                  "My Account",
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
-                ),
-                subtitle: Text(
-                  "Account details",
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontSize: 15,
-                        color: Colors.grey,
-                      ),
-                ),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.arrow_forward_ios_outlined),
-                ),
-              ),
-              GetBuilder<ThemeController>(builder: (controller) {
-                return ListTile(
-                  onTap: () => controller.toggleTheme(),
+      body: GetBuilder<SignInAndUpController>(builder: (controller) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            HeaderHolder(
+              email: controller.userdata.email,
+              name: controller.userdata.name,
+              imageURL: widget.imageURL,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Column(
+              children: [
+                ListTile(
                   leading: CircleAvatar(
                     backgroundColor: CustomAsset.primaryColor,
                     radius: 20,
-                    child: Icon(
-                      controller.isDarkMode == true
-                          ? Icons.dark_mode
-                          : Icons.light_mode,
-                      size: 32,
+                    child: const Icon(
+                      Icons.account_circle_outlined,
+                      size: 35,
                       color: Colors.white,
                     ),
                   ),
                   title: Text(
-                    "Theme Mode",
+                    "My Account",
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           fontSize: 17,
                           fontWeight: FontWeight.w800,
                         ),
                   ),
                   subtitle: Text(
-                    controller.isDarkMode == true ? "Dark mode" : "Light mode",
+                    "Account details",
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.arrow_forward_ios_outlined),
+                  ),
+                ),
+                GetBuilder<ThemeController>(builder: (controller) {
+                  return ListTile(
+                    onTap: () => controller.toggleTheme(),
+                    leading: CircleAvatar(
+                      backgroundColor: CustomAsset.primaryColor,
+                      radius: 20,
+                      child: Icon(
+                        controller.isDarkMode == true
+                            ? Icons.dark_mode
+                            : Icons.light_mode,
+                        size: 32,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      "Theme Mode",
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                    subtitle: Text(
+                      controller.isDarkMode == true
+                          ? "Dark mode"
+                          : "Light mode",
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            fontSize: 15,
+                            color: Colors.grey,
+                          ),
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        controller.toggleTheme();
+                        log(controller.isDarkMode.toString());
+                      },
+                      icon: const Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                  );
+                }),
+                ListTile(
+                  onTap: () {
+                    _showAlertDialog();
+                  },
+                  leading: CircleAvatar(
+                    backgroundColor: CustomAsset.primaryColor,
+                    radius: 20,
+                    child: const Icon(
+                      Icons.developer_mode,
+                      size: 32,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(
+                    "About",
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                  ),
+                  subtitle: Text(
+                    "Developer Details",
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           fontSize: 15,
                           color: Colors.grey,
@@ -247,80 +290,57 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                   ),
                   trailing: IconButton(
                     onPressed: () {
-                      controller.toggleTheme();
-                      log(controller.isDarkMode.toString());
+                      _showAlertDialog();
                     },
                     icon: const Icon(Icons.arrow_forward_ios_outlined),
                   ),
-                );
-              }),
-              ListTile(
-                onTap: () {
-                  _showAlertDialog();
-                },
-                leading: CircleAvatar(
-                  backgroundColor: CustomAsset.primaryColor,
-                  radius: 20,
-                  child: const Icon(
-                    Icons.developer_mode,
-                    size: 32,
-                    color: Colors.white,
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: CustomAsset.primaryColor,
+                    foregroundColor: CustomAsset.foregroundColor,
+                    minimumSize: Size(context.width * 0.8, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                title: Text(
-                  "About",
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
-                ),
-                subtitle: Text(
-                  "Developer Details",
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontSize: 15,
-                        color: Colors.grey,
-                      ),
-                ),
-                trailing: IconButton(
                   onPressed: () {
-                    _showAlertDialog();
+                    _signInController.logout();
                   },
-                  icon: const Icon(Icons.arrow_forward_ios_outlined),
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: CustomAsset.primaryColor,
-                  foregroundColor: CustomAsset.foregroundColor,
-                  minimumSize: Size(context.width * 0.8, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  _signInController.logout();
-                },
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
+                )
+              ],
+            ),
+          ],
+        );
+      }),
     );
   }
 }
+//  return FutureBuilder(
+//             future: controller.userData(controller.user!.uid),
+//             builder: (context, data) {
+//               final UserModel? userData = data.data;
 
+//               return data.connectionState == ConnectionState.waiting
+//                   ? const Center(
+//                       child: CircularProgressIndicator(),
+//                     )
+//                   :
 class HeaderHolder extends StatelessWidget {
-  const HeaderHolder({super.key, this.imageURL});
+  const HeaderHolder(
+      {super.key, this.imageURL, required this.name, required this.email});
   final String? imageURL;
+  final String name;
+  final String email;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -348,14 +368,14 @@ class HeaderHolder extends StatelessWidget {
             height: 10,
           ),
           Text(
-            "MD Tangim Haque",
+            name,
             style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                   fontSize: 23,
                   fontWeight: FontWeight.bold,
                 ),
           ),
           Text(
-            "example@gmail.com",
+            email,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontSize: 15,
                 ),

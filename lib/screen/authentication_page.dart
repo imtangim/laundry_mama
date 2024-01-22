@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:laundry_mama_rework/MediaQuery/size.dart';
@@ -46,7 +48,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                       builder: (controller) => Container(
                         margin: const EdgeInsets.all(10),
                         height: context.height *
-                            (controller.isSigninMode == true ? 0.35 : 0.58),
+                            (controller.isSigninMode == true ? 0.35 : 0.63),
                         width: context.width * 0.95,
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
@@ -169,10 +171,24 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           backgroundColor: const Color.fromRGBO(46, 68, 151, 1),
                           foregroundColor: (Colors.white)),
                       onPressed: () async {
+                        log(_authPageController.isSigninMode.toString());
                         _authPageController.isSigninMode == true
-                            ? _signInController.signIn()
-                            : _signInController.signIn();
+                            ? _signInController.signInWithEmailAndPassword(
+                                _signInController.emailController.text.trim(),
+                                _signInController.passwordController.text,
+                              )
+                            : _signInController.signUpWithEmailAndPassword(
+                                _signInController.signUpemailController.text
+                                    .trim(),
+                                _signInController.signUppasswordController.text,
+                                _signInController.firstName.text,
+                                _signInController.lastName.text,
+                                _signInController.address.text,
+                              );
                       },
+
+                      //                 String email, String password,
+                      // String firstname, String lastname, String address
                       child: GetBuilder<SignInAndUpController>(
                           builder: (controller) {
                         return controller.isLoading

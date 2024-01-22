@@ -1,7 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:laundry_mama_rework/controller/datetime_controller.dart';
 import 'package:laundry_mama_rework/utils/color.dart';
+import 'package:laundry_mama_rework/utils/style.dart';
+import 'package:laundry_mama_rework/controller/order_cart_controller.dart';
 
 class PickDate extends StatefulWidget {
   const PickDate({super.key});
@@ -11,10 +14,7 @@ class PickDate extends StatefulWidget {
 }
 
 class _PickDateState extends State<PickDate> {
-  String? _pickupDate;
-  String? _pickupTime;
-  String? _deliveryDate;
-  String? _deliveryTime;
+  final DateController _cartController = Get.put(DateController());
 
   Future<void> _selectPickDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
@@ -27,26 +27,24 @@ class _PickDateState extends State<PickDate> {
       // Handle the selected date as needed
       String formattedDate = DateFormat('dd/MM/yy').format(pickedDate);
 
-      setState(() {
-        _pickupDate = formattedDate;
-      });
+      _cartController.pickupDate = formattedDate;
+      _cartController.uPdate();
     }
   }
 
   Future<void> _selectDeliveryDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        initialDate: DateTime.now().add(const Duration(days: 1)),
+        firstDate: DateTime.now().add(const Duration(days: 1)),
         lastDate: DateTime(DateTime.now().year + 1));
 
     if (pickedDate != null) {
       // Handle the selected date as needed
       String formattedDate = DateFormat('dd/MM/yy').format(pickedDate);
 
-      setState(() {
-        _deliveryDate = formattedDate;
-      });
+      _cartController.deliveryDate = formattedDate;
+      _cartController.uPdate();
     }
   }
 
@@ -60,8 +58,8 @@ class _PickDateState extends State<PickDate> {
       // Handle the selected time as needed
 
       if (context.mounted) {
-        _pickupTime = pickedTime.format(context);
-        setState(() {});
+        _cartController.pickupTime = pickedTime.format(context);
+        _cartController.uPdate();
       }
     }
   }
@@ -76,8 +74,8 @@ class _PickDateState extends State<PickDate> {
       // Handle the selected time as needed
 
       if (context.mounted) {
-        _deliveryTime = pickedTime.format(context);
-        setState(() {});
+        _cartController.deliveryTime = pickedTime.format(context);
+        _cartController.uPdate();
       }
     }
   }
@@ -96,7 +94,7 @@ class _PickDateState extends State<PickDate> {
             height: 30,
           ),
           //Delivery Date and time
-          deliveryDateTime(context)
+          deliveryDateTime(context),
         ],
       ),
     );
@@ -146,16 +144,20 @@ class _PickDateState extends State<PickDate> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _deliveryDate == null
-                              ? "Select Date"
-                              : _deliveryDate.toString(),
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                        ),
+                        GetBuilder<DateController>(builder: (controller) {
+                          return Text(
+                            controller.deliveryDate != ""
+                                ? controller.deliveryDate
+                                : "Select Date",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          );
+                        }),
                         const Icon(Icons.calendar_month_outlined)
                       ],
                     ),
@@ -182,16 +184,20 @@ class _PickDateState extends State<PickDate> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _deliveryTime == null
-                              ? "Select time"
-                              : _deliveryTime.toString(),
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                        ),
+                        GetBuilder<DateController>(builder: (controller) {
+                          return Text(
+                            controller.deliveryTime != ""
+                                ? controller.deliveryTime
+                                : "Select time",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          );
+                        }),
                         const Icon(Icons.av_timer_rounded)
                       ],
                     ),
@@ -249,16 +255,20 @@ class _PickDateState extends State<PickDate> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _pickupDate == null
-                              ? "Select Date"
-                              : _pickupDate.toString(),
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                        ),
+                        GetBuilder<DateController>(builder: (controller) {
+                          return Text(
+                            controller.pickupDate != ""
+                                ? controller.pickupDate
+                                : "Select Date",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          );
+                        }),
                         const Icon(Icons.calendar_month_outlined)
                       ],
                     ),
@@ -285,17 +295,20 @@ class _PickDateState extends State<PickDate> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _pickupTime == null
-                              ? "Select time"
-                              : _pickupTime.toString(),
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                        ),
-                        const Icon(Icons.av_timer_rounded)
+                        GetBuilder<DateController>(builder: (controller) {
+                          return Text(
+                            controller.pickupTime != ""
+                                ? controller.pickupTime
+                                : "Select Time",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          );
+                        }),
                       ],
                     ),
                   ),

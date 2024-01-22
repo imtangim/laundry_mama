@@ -2,14 +2,21 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 
-class PaymentController {
+class PaymentController extends GetxController {
   Map<String, dynamic>? paymentIntentData;
 
-  Future<Map> makePayment(
+  bool? paymentSuccess;
+  bool datafieldpage = true;
+  bool isPaymentloading = true;
+
+  Future<bool?> makePayment(
       {required String amount, required String currency}) async {
+    isPaymentloading = true;
+    update();
     try {
       paymentIntentData = await createPaymentIntent(amount, currency);
       if (paymentIntentData != null) {
@@ -21,34 +28,39 @@ class PaymentController {
             customerEphemeralKeySecret: paymentIntentData!["ephemeralKey"],
           ),
         );
-        Future<Map> response = displayPaymentSheet();
+        paymentSuccess = await displayPaymentSheet();
         log(paymentIntentData.toString());
-        return response;
+        isPaymentloading = false;
+        datafieldpage = false;
+        update();
+        return paymentSuccess;
       } else {
         throw Exception();
       }
     } catch (e, s) {
       log("Exception: $e $s");
-      return {"Status": 400, "message": "faled"};
+      isPaymentloading = false;
+      update();
+      return paymentSuccess;
     }
   }
 
-  Future<Map> displayPaymentSheet() async {
+  Future<bool> displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet();
       log("Payment successfull");
-      return {"Status": 200, "message": "success"};
+      return true;
     } on Exception catch (e) {
       if (e is StripeException) {
         log("Errror from stripe: ${e.error.localizedMessage}");
-        return {"Status": 400, "message": "${e.error.localizedMessage}"};
+        return false;
       } else {
         log("Unforeseen error: $e");
-        return {"Status": 400, "message": "$e"};
+        return false;
       }
     } catch (e) {
       log("exception: $e");
-      return {"Status": 400, "message": "$e"};
+      return false;
     }
   }
 

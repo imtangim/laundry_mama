@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:laundry_mama_rework/components/widget/bttom_sheet.dart';
+import 'package:laundry_mama_rework/controller/order_cart_controller.dart';
+import 'package:laundry_mama_rework/models/product_model.dart';
 import 'package:laundry_mama_rework/utils/color.dart';
 import 'package:laundry_mama_rework/utils/service.dart';
 import 'package:laundry_mama_rework/utils/style.dart';
@@ -13,6 +17,25 @@ class ListOfLaundry extends StatefulWidget {
 }
 
 class _ListOfLaundryState extends State<ListOfLaundry> {
+  final List<Product> items = [];
+  final OrderCounterController _cartController =
+      Get.find<OrderCounterController>();
+
+  @override
+  void initState() {
+    for (var i = 0; i < service.length; i++) {
+      String name = service[i]["Cloth_name"];
+      int count = 0;
+      String price = service[i]["service_price"].toString();
+      items.add(
+        Product(name: name, totalCount: count, price: price),
+      );
+    }
+
+//
+    super.initState();
+  }
+
   double _dragStartY = 0.0;
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -33,7 +56,23 @@ class _ListOfLaundryState extends State<ListOfLaundry> {
             physics: const AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              return const ProductSelection();
+              Product item = items[index];
+              return GetBuilder<OrderCounterController>(builder: (controller) {
+                return ProductSelection(
+                  counter: controller.getCounterValue(item.name).toString(),
+                  increment: () {
+                    controller.incrementCounter(item.name);
+                    log(controller.itemCounters.toString());
+                    log(controller.totalAmount.toString());
+                    log(controller.calculateAmount().toString());
+                  },
+                  decrement: () {
+                    controller.decrementCounter(item.name);
+                  },
+                  name: service[index]["Cloth_name"],
+                  price: service[index]["service_price"].toString(),
+                );
+              });
             },
             // separatorBuilder: (context, index) => const Divider(),
             itemCount: service.length,
@@ -71,15 +110,20 @@ class _ListOfLaundryState extends State<ListOfLaundry> {
                       Text("Slide up for details")
                     ],
                   ),
-                  Text(
+                  const Text(
                     "Your Cart",
-                    style: CustomStyle.headingStyle,
+                    style: TextStyle(fontSize: 16),
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Total item"),
-                      Text("50 Items"),
+                      const Text("Total item"),
+                      GetBuilder<OrderCounterController>(builder: (controller) {
+                        return Text(
+                          "${controller.calculateSum(controller.itemCounters).toString()} Cloths",
+                          style: const TextStyle(fontSize: 16),
+                        );
+                      }),
                     ],
                   ),
                 ],
@@ -98,8 +142,17 @@ class _ListOfLaundryState extends State<ListOfLaundry> {
 class ProductSelection extends StatelessWidget {
   const ProductSelection({
     super.key,
+    required this.price,
+    required this.name,
+    required this.increment,
+    required this.decrement,
+    required this.counter,
   });
-
+  final String price;
+  final String name;
+  final Function() increment;
+  final Function() decrement;
+  final String counter;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -112,11 +165,11 @@ class ProductSelection extends StatelessWidget {
         ),
       ),
       title: Text(
-        "Title",
+        name,
         style: CustomStyle.headingStyle,
       ),
       subtitle: Text(
-        "10",
+        price,
         style: CustomStyle.headingStyle,
       ),
       trailing: SizedBox(
@@ -125,27 +178,27 @@ class ProductSelection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                backgroundColor: CustomAsset.primaryColor,
-                foregroundColor: CustomAsset.foregroundColor,
-                child: const Icon(
-                  Icons.add,
-                  size: 30,
-                ),
-              ),
-            ),
-            Text(
-              "3",
-              style: CustomStyle.headingStyle.copyWith(fontSize: 20),
-            ),
-            GestureDetector(
-              onTap: () {},
+              onTap: decrement,
               child: CircleAvatar(
                 backgroundColor: CustomAsset.primaryColor,
                 foregroundColor: CustomAsset.foregroundColor,
                 child: const Icon(
                   Icons.remove,
+                  size: 30,
+                ),
+              ),
+            ),
+            Text(
+              counter,
+              style: CustomStyle.headingStyle.copyWith(fontSize: 20),
+            ),
+            GestureDetector(
+              onTap: increment,
+              child: CircleAvatar(
+                backgroundColor: CustomAsset.primaryColor,
+                foregroundColor: CustomAsset.foregroundColor,
+                child: const Icon(
+                  Icons.add,
                   size: 30,
                 ),
               ),
